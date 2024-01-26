@@ -1,0 +1,48 @@
+html,
+body {
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.log-container {
+  border: 1px solid #ccc;
+  height: 320px; /* Adjust height as needed */
+  overflow-y: auto; /* Allows scrolling for overflow content */
+  padding: 10px;
+  background-color: white;
+}
+
+#progressBarContainer {
+  display: none;
+}
+
+.connection-status {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: white;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.status-dot {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.offline {
+  background-color: red;
+}
+
+.online {
+  background-color: green;
+}
