@@ -1,0 +1,15 @@
+# environment
+
+env/
+.env
+
+# node modules
+node_modules
+dist/
+
+# python/flask
+__pycache__
+*.log
+
+# misc stuff
+.DS_Store
