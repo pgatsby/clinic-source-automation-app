@@ -1,3 +1,17 @@
+document.addEventListener("DOMContentLoaded", () => {
+  // Check if there are saved credentials and clinic name when the app starts
+  const savedClinicName = localStorage.getItem("clinicName");
+  const savedUsername = localStorage.getItem("username");
+  const savedPassword = localStorage.getItem("password");
+
+  if (savedClinicName && savedUsername && savedPassword) {
+    document.getElementById("clinicName").value = savedClinicName;
+    document.getElementById("username").value = savedUsername;
+    document.getElementById("password").value = savedPassword;
+    document.getElementById("rememberMe").checked = true;
+  }
+});
+
 function updateLog(messages) {
   const logContainer = document.getElementById("processLog");
   messages.forEach((message) => {
@@ -82,6 +96,21 @@ document
   .getElementById("loginForm")
   .addEventListener("submit", function (event) {
     event.preventDefault();
+
+    const clinicName = document.getElementById("clinicName").value;
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    const rememberMe = document.getElementById("rememberMe").checked;
+
+    if (rememberMe) {
+      localStorage.setItem("clinicName", clinicName);
+      localStorage.setItem("username", username);
+      localStorage.setItem("password", password);
+    } else {
+      localStorage.removeItem("clinicName");
+      localStorage.removeItem("username");
+      localStorage.removeItem("password");
+    }
 
     // Disable the submit button on form submission
     disableSubmitButton();
