@@ -9,10 +9,13 @@ function updateLog(messages) {
 }
 
 function updateProgressBar(percentage) {
+  // Round the percentage to the nearest whole number
+  const roundedPercentage = Math.round(percentage);
+
   const progressBar = document.getElementById("progressBar");
-  progressBar.style.width = percentage + "%";
-  progressBar.textContent = percentage + "%";
-  progressBar.setAttribute("aria-valuenow", percentage);
+  progressBar.style.width = roundedPercentage + "%";
+  progressBar.textContent = roundedPercentage + "%";
+  progressBar.setAttribute("aria-valuenow", roundedPercentage);
 }
 
 function clearLog() {
