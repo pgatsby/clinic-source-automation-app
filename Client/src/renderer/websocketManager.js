@@ -1,5 +1,5 @@
 // Update the server URL here
-const serverUrl = "https://clinic-source-server-c397a1ddd444.herokuapp.com/";
+const serverUrl = "https://clinic-source-server-c397a1ddd444.herokuapp.com";
 
 // Debugging on localhost
 // const serverUrl = "http://127.0.0.1:5000";
