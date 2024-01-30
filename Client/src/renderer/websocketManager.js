@@ -1,6 +1,8 @@
 // Update the server URL here
-// const serverUrl = "https://clinic-source-server-f660b6c1e07c.herokuapp.com";
-const serverUrl = "http://127.0.0.1:5000";
+const serverUrl = "https://clinic-source-server-c397a1ddd444.herokuapp.com/";
+
+// Debugging on localhost
+// const serverUrl = "http://127.0.0.1:5000";
 
 const socketAPI = window.electronAPI.createSocket(serverUrl);
 
