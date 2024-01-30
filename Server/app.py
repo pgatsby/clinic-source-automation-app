@@ -20,18 +20,40 @@ def handle_disconnect():
     print('Client disconnected')
 
 
-@app.route('/run_script', methods=['POST'])
-def run_script():
+@app.route('/login', methods=['POST'])
+def login():
     data = request.json
     clinic_name = data['clinicName']
     username = data['username']
     password = data['password']
-    num_of_pts = data['numOfPts']
 
-    if pt_autofill.run(clinic_name, username, password, num_of_pts):
+    login_successful = pt_autofill.login(clinic_name, username, password)
+    if login_successful:
+        return jsonify({"status": "success"})
+    else:
+        return jsonify({"status": "failure"})
+
+
+@app.route('/get_patient_names', methods=['GET'])
+def get_patient_names():
+    patient_names = pt_autofill.get_pt_names()
+
+    if patient_names is not None:
+        return jsonify({"patientNames": patient_names})
+    else:
+        return jsonify({"error": "Failed to retrieve patient names"}), 500
+
+
+@app.route('/run_script', methods=['POST'])
+def run_script():
+    data = request.json
+    pt_name = data['ptName']
+    num_of_notes = data['numOfNotes']
+
+    if pt_autofill.run(num_of_notes, pt_name):
         return jsonify({"status": "Successfully Completed"})
     else:
-        return jsonify({"Error": "Oops"})
+        return jsonify({"Error": "Failed to run"})
 
 
 if __name__ == '__main__':

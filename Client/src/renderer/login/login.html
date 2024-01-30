@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src *; style-src * 'unsafe-inline'; script-src *; img-src 'self' data:;"
+    />
+
+    <title>Clinic Automation App</title>
+    <!-- Include Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="login.css" />
+    <link rel="stylesheet" type="text/css" href="../index.css" />
+  </head>
+  <body>
+    <div class="container h-100 p-3">
+      <!-- Spinner -->
+      <div id="loginSpinner" class="d-none">
+        <div class="spinner-border" role="status"></div>
+      </div>
+
+      <!-- Login Error -->
+      <div id="loginError" class="alert alert-danger" role="alert">
+        Login Error: Check Credientials
+      </div>
+
+      <h3 class="text-center">Clinic Automation App</h3>
+      <form id="loginForm">
+        <div class="form-group mt-3">
+          <label for="clinicName">Clinic Name:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="clinicName"
+            name="clinicName"
+            required
+          />
+        </div>
+        <div class="form-group mt-3">
+          <label for="username">Username:</label>
+          <input
+            type="text"
+            class="form-control"
+            id="username"
+            name="username"
+            required
+          />
+        </div>
+        <div class="form-group mt-3">
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            class="form-control"
+            id="password"
+            name="password"
+            required
+          />
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <button type="submit" class="btn btn-success" id="logInBtn">
+            Login
+          </button>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="rememberMe" />
+            <label class="form-check-label" for="rememberMe">
+              Remember Me
+            </label>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Connection Status Indicator -->
+    <div id="connectionStatus" class="connection-status">
+      <span id="statusDot" class="status-dot offline"></span>
+      <span id="statusText">Offline</span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.min.js"
+      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"
+      integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0="
+      crossorigin="anonymous"
+    ></script>
+    <script src="../websocketManager.js"></script>
+    <script src="login.js"></script>
+  </body>
+</html>

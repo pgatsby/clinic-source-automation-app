@@ -3,7 +3,8 @@ const axios = require("axios");
 const io = require("socket.io-client");
 
 contextBridge.exposeInMainWorld("electronAPI", {
-  postRequest: (url, data) => axios.post(url, data),
+  getRequest: (url) => axios.get(url).then((response) => response.data),
+  postRequest: (url, data) => axios.post(url, data).then((response) => response.data),
   createSocket: (url) => {
     const socket = io(url);
 
@@ -13,4 +14,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
       disconnect: () => socket.disconnect(),
     };
   },
+  sendLoginSuccess: () => ipcRenderer.send("login-success"),
+  onLoginSuccessful: (callback) => ipcRenderer.on("login-successful", callback),
 });

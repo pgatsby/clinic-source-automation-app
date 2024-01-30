@@ -1,0 +1,13 @@
+#loginError {
+  position: fixed;
+  top: -100px;
+  left: 0;
+  right: 0;
+  margin: 20px;
+  transition: top 0.5s;
+  z-index: 99;
+}
+
+.show-alert {
+  top: 20px !important;
+}

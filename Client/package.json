@@ -11,7 +11,7 @@
   "author": "Peter Gatsby",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^28.1.4",
+    "electron": "^26.6.7",
     "electron-builder": "^24.9.1"
   },
   "dependencies": {
@@ -20,7 +20,16 @@
   },
   "build": {
     "mac": {
-      "icon": "build/icon.icns"
+      "icon": "build/icon.icns",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "minimumSystemVersion": "10.13.0"
     },
     "win": {
       "icon": "build/icon.ico",

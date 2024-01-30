@@ -7,22 +7,6 @@ body {
   overflow: hidden;
 }
 
-.log-container {
-  border: 1px solid #ccc;
-  height: 320px; /* Adjust height as needed */
-  overflow-y: auto; /* Allows scrolling for overflow content */
-  padding: 10px;
-  background-color: white;
-}
-
-#progressBarContainer {
-  display: none;
-}
-
-#progressBar {
-  padding: 10px;
-}
-
 .connection-status {
   position: fixed;
   bottom: 20px;
@@ -49,4 +33,17 @@ body {
 
 .online {
   background-color: green;
+}
+
+/* Spinner styles */
+#loginSpinner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.7);
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
 }
