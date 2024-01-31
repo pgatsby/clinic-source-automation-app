@@ -19,7 +19,7 @@ socketio = None
 driver = None
 
 # Environment variable for debug
-DEBUG = os.environ.get("DEBUG", True)
+DEBUG = (os.getenv('DEBUG', 'False') == 'True')
 
 # Environment variable for WebDriverWait timeout
 TIMEOUT = int(os.environ.get('WAIT_TIMEOUT', '10'))  # Default to 10 if not set
@@ -163,7 +163,8 @@ def get_pt_names():
         return patient_names
 
     except Exception as e:
-        add_log(f"Fetched Patient Names Failed: {HTTPStatus.BAD_REQUEST.value}")
+        add_log(
+            f"Fetched Patient Names Failed: {HTTPStatus.BAD_REQUEST.value}")
         return None
 
 
@@ -384,7 +385,7 @@ def autofill_pt_info(pt_name, num_of_notes):
                               'completedPercentage': progress_percentage})
 
         return True
-    
+
     except Exception as e:
         add_log(f"Autofill PT Info Failed: {HTTPStatus.BAD_REQUEST.value}")
         return False
