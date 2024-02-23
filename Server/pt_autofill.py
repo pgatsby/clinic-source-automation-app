@@ -274,14 +274,12 @@ def autofill_pt_info(pt_name, num_of_notes):
     global driver
 
     try:
-
         if not driver:
             return False
 
         navigate_to_visits_page()
 
         if not pt_name:
-
             all_input = driver.find_element(By.ID, 'lbPatients_i0')
             all_input.click()
 
@@ -296,7 +294,6 @@ def autofill_pt_info(pt_name, num_of_notes):
 
         else:
             filter_input = driver.find_element(By.ID, 'filterBox')
-
             filter_input.send_keys(pt_name)
 
             time.sleep(TIMEOUT)
@@ -306,7 +303,6 @@ def autofill_pt_info(pt_name, num_of_notes):
                     (By.XPATH, f"//li[contains(., '{pt_name}') and contains(@class, 'rlbItem')]"))
             )
 
-            # Find the matching name and click
             matching_name = driver.find_element(
                 By.XPATH, f"//li[contains(., '{pt_name}') and contains(@class, 'rlbItem')]")
             matching_name.click()
@@ -318,68 +314,45 @@ def autofill_pt_info(pt_name, num_of_notes):
 
             add_log(f"Access {pt_name} Table: {HTTPStatus.OK.value}")
 
-        for index in range(num_of_notes):
+        pt_table = driver.find_element(By.ID, "dgVisits_ctl00")
+        pt_rows = pt_table.find_elements(By.XPATH, "tr")
+
+        # Filter out rows that contain the specified image
+        pt_rows_without_img = [row for row in pt_rows if not row.find_elements(
+            By.XPATH, ".//img[@src='images/checkmark.gif']")]
+
+        notes_completed = 0
+
+        for index, pt_row in enumerate(pt_rows_without_img):
+            if notes_completed >= num_of_notes:
+                break
+
+            pt_row.click()
+
             WebDriverWait(driver, TIMEOUT).until(
                 expected_conditions.presence_of_element_located(
-                    (By.XPATH, "//*[starts-with(@id, 'dgVisits_ctl00__')]"))
+                    (By.XPATH, "//*[contains(@id, 'PageToolbar_') and contains(@id, '_btnInsert')]"))
             )
 
-            (f"Access PT Row: {HTTPStatus.OK.value}")
+            template_insert_button = driver.find_element(
+                By.XPATH, "//*[contains(@id, 'PageToolbar_') and contains(@id, '_btnInsert')]")
+            template_insert_button.click()
 
-            # Reacquire the table and rows on each iteration to avoid stale references
-            pt_table = driver.find_element(By.ID, "dgVisits_ctl00")
-            # Find all elements where the ID starts with 'dgVisits_ctl00__'
-            pt_rows = pt_table.find_elements(
-                By.XPATH, "//*[starts-with(@id, 'dgVisits_ctl00__')]")
+            WebDriverWait(driver, TIMEOUT).until(
+                expected_conditions.presence_of_element_located(
+                    (By.XPATH, "//table[contains(@id, 'CustomTemplate_') and contains(@id, '_C_TemplateItem_') and contains(@id, '_tblGoals')]"))
+            )
 
-            pt_row = pt_rows[index]
+            autofill_pt_goals()
+            autofill_pt_soap()
+            save_pt_info()
 
-            try:
-                # Try to find the td containing the specific img
-                img = pt_row.find_element(
-                    By.XPATH, ".//td/img[@src='images/checkmark.gif']")
-            except:
-                pt_row.click()
-
-                WebDriverWait(driver, TIMEOUT).until(
-                    expected_conditions.presence_of_element_located(
-                        (By.XPATH, "//*[contains(@id, 'PageToolbar_') and contains(@id, '_btnInsert')]"))
-                )
-                (f"Navigated to PT Page: {HTTPStatus.OK.value}")
-
-                template_insert_button = driver.find_element(
-                    By.XPATH, "//*[contains(@id, 'PageToolbar_') and contains(@id, '_btnInsert')]")
-                template_insert_button.click()
-
-                # Wait for page to load
-                # WebDriverWait(driver, TIMEOUT).until(
-                #     expected_conditions.presence_of_element_located(
-                #         (By.XPATH, "//a[@title='Edit Template']"))
-                # )
-
-                # edit_template_button = driver.find_element(
-                #     By.XPATH, "//a[@title='Edit Template']")
-
-                # edit_template_button.click()
-
-                WebDriverWait(driver, TIMEOUT).until(
-                    expected_conditions.presence_of_element_located(
-                        (By.XPATH, "//table[contains(@id, 'CustomTemplate_') and contains(@id, '_C_TemplateItem_') and contains(@id, '_tblGoals')]"))
-                )
-
-                autofill_pt_goals()
-
-                autofill_pt_soap()
-
-                save_pt_info()
+            notes_completed += 1
 
             add_log(
-                f"Completed {index + 1}/{num_of_notes}: {HTTPStatus.OK.value} ")
+                f"Completed {notes_completed}/{num_of_notes}: {HTTPStatus.OK.value}")
 
-         # Calculate progress percentage
-            progress_percentage = ((index + 1) / num_of_notes) * 100
-
-            # Emit an event with the progress
+            progress_percentage = (notes_completed / num_of_notes) * 100
             if socketio:
                 socketio.emit('task_completed', {
                               'completedPercentage': progress_percentage})

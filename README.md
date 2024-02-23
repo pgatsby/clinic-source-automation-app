@@ -8,7 +8,8 @@
 ## About The Project
 
 <div align="center"> 
-<img width="685" alt="project-image" src="https://github.com/p-gatsby/p-gatsby/assets/106583795/ae172f95-8654-44ef-871c-c6ed0de92e53">
+<img width="491" alt="login" src="https://github.com/p-gatsby/Clinic-Source-Automation-App/assets/106583795/81dcb3fe-6a63-4f4b-ac08-70af5a5663f7">
+<img width="492" alt="patientEntry" src="https://github.com/p-gatsby/Clinic-Source-Automation-App/assets/106583795/c728a750-df26-4460-b7b4-4390b80fb718">
 </div>
 
 This application, built with Electron, Flask, and Selenium, is designed to streamline clinical processes by automating redundant tasks like filling in patient information using previously submitted data.
