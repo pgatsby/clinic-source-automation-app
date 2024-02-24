@@ -18,7 +18,7 @@ def handle_connect():
 @socketio.on('disconnect')
 def handle_disconnect():
     print('Client disconnected')
-    pt_autofill.driver.quit()
+    # pt_autofill.driver.quit()
 
 
 @app.route('/login', methods=['POST'])

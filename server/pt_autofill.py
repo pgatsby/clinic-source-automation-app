@@ -98,7 +98,6 @@ def setup_driver():
 def login(clinic_name, username, password):
     setup_driver()
 
-    global driver
     # Find the form elements and try to login
     try:
         # Find the form elements
@@ -129,7 +128,6 @@ def login(clinic_name, username, password):
 
 
 def navigate_to_visits_page():
-    global driver
 
     try:
         # Navigate to the next page
@@ -148,7 +146,6 @@ def navigate_to_visits_page():
 
 
 def get_pt_names():
-    global driver
 
     try:
 
@@ -165,11 +162,33 @@ def get_pt_names():
     except Exception as e:
         add_log(
             f"Fetched Patient Names Failed: {HTTPStatus.BAD_REQUEST.value}")
-        return None
+        return []
+
+
+def get_pt_rows_without_notes():
+
+    try:
+
+        pt_table = driver.find_element(By.ID, "dgVisits_ctl00")
+        pt_rows = pt_table.find_elements(
+            By.XPATH, "//*[starts-with(@id, 'dgVisits_ctl00__')]")
+
+        if not pt_rows:
+            add_log("No patient rows found.")
+            return []
+
+        # Filter out rows that contain the specified image
+        pt_rows_without_notes = [row for row in pt_rows if not row.find_elements(
+            By.XPATH, ".//img[@src='images/checkmark.gif']")]
+
+        return pt_rows_without_notes
+    except Exception as e:
+        add_log(
+            f"Fetched Patient Rows without Notes Failed: {HTTPStatus.BAD_REQUEST.value}")
+        return []
 
 
 def autofill_pt_goals():
-    global driver
 
     goals_table = driver.find_element(
         By.XPATH, "//table[contains(@id, 'CustomTemplate_') and contains(@id, '_C_TemplateItem_') and contains(@id, '_tblGoals')]")
@@ -218,7 +237,6 @@ def autofill_pt_goals():
 
 
 def autofill_pt_soap():
-    global driver
 
     # Get the number of copy links initially
     num_of_copy_links = len(driver.find_elements(
@@ -259,7 +277,7 @@ def autofill_pt_soap():
 
 
 def save_pt_info():
-    global driver
+
     try:
         save_button = driver.find_element(
             By.XPATH, "//a[@title='Save Changes']")
@@ -271,7 +289,6 @@ def save_pt_info():
 
 
 def autofill_pt_info(pt_name, num_of_notes):
-    global driver
 
     try:
         if not driver:
@@ -314,25 +331,33 @@ def autofill_pt_info(pt_name, num_of_notes):
 
             add_log(f"Access {pt_name} Table: {HTTPStatus.OK.value}")
 
-        pt_table = driver.find_element(By.ID, "dgVisits_ctl00")
-        pt_rows = pt_table.find_elements(By.XPATH, "tr")
-
-        # Filter out rows that contain the specified image
-        pt_rows_without_img = [row for row in pt_rows if not row.find_elements(
-            By.XPATH, ".//img[@src='images/checkmark.gif']")]
-
         notes_completed = 0
 
-        for index, pt_row in enumerate(pt_rows_without_img):
-            if notes_completed >= num_of_notes:
+        while notes_completed < num_of_notes:
+
+            WebDriverWait(driver, TIMEOUT).until(
+                expected_conditions.presence_of_element_located(
+                    (By.XPATH, "//*[starts-with(@id, 'dgVisits_ctl00__')]"))
+            )
+
+            # Fetch patient rows without notes
+            pt_rows_without_notes = get_pt_rows_without_notes()
+
+            if not pt_rows_without_notes:
+                add_log("No more patients to process or limit reached.")
                 break
 
+            # Assume we process the first row for simplicity; adjust as needed
+            pt_row = pt_rows_without_notes[0]
+
+            # Example: Clicking on the patient row to open details
             pt_row.click()
 
             WebDriverWait(driver, TIMEOUT).until(
                 expected_conditions.presence_of_element_located(
                     (By.XPATH, "//*[contains(@id, 'PageToolbar_') and contains(@id, '_btnInsert')]"))
             )
+            add_log(f"Navigated to PT Page: {HTTPStatus.OK.value}")
 
             template_insert_button = driver.find_element(
                 By.XPATH, "//*[contains(@id, 'PageToolbar_') and contains(@id, '_btnInsert')]")
@@ -348,7 +373,6 @@ def autofill_pt_info(pt_name, num_of_notes):
             save_pt_info()
 
             notes_completed += 1
-
             add_log(
                 f"Completed {notes_completed}/{num_of_notes}: {HTTPStatus.OK.value}")
 
@@ -356,6 +380,9 @@ def autofill_pt_info(pt_name, num_of_notes):
             if socketio:
                 socketio.emit('task_completed', {
                               'completedPercentage': progress_percentage})
+
+            # Return to the visits page to refresh references for the next iteration
+            navigate_to_visits_page()
 
         return True
 
