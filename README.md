@@ -30,7 +30,7 @@ Before you begin, ensure you have the following installed:
    Clone the repository to your local machine:
 
    ```bash
-   git clone https://github.com/p-gatsby/clinic-source-automation-app.git
+   git clone https://github.com/pgatsby/clinic-source-automation-app.git
    ```
 
 2. **Electron App Installation**  
